@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main class="container">
+  <div th:replace="~{fragments :: flash}"></div>
+  <div class="chips">
+    <a th:href="@{/}" th:classappend="${selectedCategory == null} ? 'active'">All</a>
+    <a th:each="c : ${categories}" th:href="@{/(category=${c})}" th:text="${c}"
+       th:classappend="${c == selectedCategory} ? 'active'"></a>
+  </div>
+  <h2 th:if="${!#strings.isEmpty(q)}">Results for "<span th:text="${q}"></span>"</h2>
+  <p th:if="${#lists.isEmpty(products)}">No products found.</p>
+  <div class="grid">
+    <div class="card" th:each="p : ${products}">
+      <a th:href="@{/products/{id}(id=${p.id})}"><img th:src="${p.imageUrl}" th:alt="${p.name}"></a>
+      <div class="card-body">
+        <small class="muted" th:text="${p.category}"></small>
+        <h3><a th:href="@{/products/{id}(id=${p.id})}" th:text="${p.name}"></a></h3>
+        <p class="price" th:text="'₹' + ${p.price}"></p>
+        <p th:if="${p.stock == 0}" class="out">Out of stock</p>
+        <form th:if="${p.stock > 0}" th:action="@{/cart/add}" method="post">
+          <input type="hidden" name="productId" th:value="${p.id}">
+          <input type="hidden" name="quantity" value="1">
+          <button class="btn" type="submit">Add to Cart</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

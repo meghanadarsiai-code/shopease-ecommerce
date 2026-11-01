@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main class="container">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>Your Cart</h1>
+  <p th:if="${#lists.isEmpty(items)}">Your cart is empty. <a th:href="@{/}">Start shopping</a></p>
+  <table class="table" th:if="${!#lists.isEmpty(items)}">
+    <thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="i : ${items}">
+        <td><a th:href="@{/products/{id}(id=${i.product.id})}" th:text="${i.product.name}"></a></td>
+        <td th:text="'₹' + ${i.product.price}"></td>
+        <td>
+          <form th:action="@{/cart/update}" method="post" class="inline">
+            <input type="hidden" name="itemId" th:value="${i.id}">
+            <input type="number" name="quantity" th:value="${i.quantity}" min="0" class="qty">
+            <button type="submit" class="btn small">Update</button>
+          </form>
+        </td>
+        <td th:text="'₹' + ${i.subtotal}"></td>
+        <td>
+          <form th:action="@{/cart/remove}" method="post" class="inline">
+            <input type="hidden" name="itemId" th:value="${i.id}">
+            <button type="submit" class="btn small danger">Remove</button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot><tr><td colspan="3" class="right"><strong>Total</strong></td>
+      <td colspan="2"><strong th:text="'₹' + ${total}"></strong></td></tr></tfoot>
+  </table>
+  <a th:if="${!#lists.isEmpty(items)}" th:href="@{/checkout}" class="btn">Proceed to Checkout</a>
+</main>
+</body>
+</html>

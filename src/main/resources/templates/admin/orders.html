@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main class="container">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>All Orders</h1>
+  <table class="table">
+    <thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th>Update</th></tr></thead>
+    <tbody>
+      <tr th:each="o : ${orders}">
+        <td th:text="'#' + ${o.id}"></td>
+        <td th:text="${o.user.name} + ' (' + ${o.user.email} + ')'"></td>
+        <td th:text="${#temporals.format(o.createdAt, 'dd MMM yyyy HH:mm')}"></td>
+        <td th:text="'₹' + ${o.total}"></td>
+        <td><span class="badge" th:text="${o.status}"></span></td>
+        <td>
+          <form th:action="@{/admin/orders/{id}/status(id=${o.id})}" method="post" class="inline">
+            <select name="status">
+              <option th:each="s : ${{'PLACED','SHIPPED','DELIVERED','CANCELLED'}}" th:value="${s}" th:text="${s}"
+                      th:selected="${s == o.status}"></option>
+            </select>
+            <button type="submit" class="btn small">Save</button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

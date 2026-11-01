@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main class="container narrow">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>Checkout</h1>
+  <table class="table">
+    <tr th:each="i : ${items}">
+      <td th:text="${i.product.name} + ' × ' + ${i.quantity}"></td>
+      <td class="right" th:text="'₹' + ${i.subtotal}"></td>
+    </tr>
+    <tr><td><strong>Total</strong></td><td class="right"><strong th:text="'₹' + ${total}"></strong></td></tr>
+  </table>
+  <form th:action="@{/checkout}" method="post" class="form">
+    <label>Shipping address
+      <textarea name="address" rows="4" required placeholder="House no, street, city, state, PIN"></textarea>
+    </label>
+    <p class="muted">Payment: Cash on Delivery</p>
+    <button class="btn" type="submit">Place Order</button>
+  </form>
+</main>
+</body>
+</html>
